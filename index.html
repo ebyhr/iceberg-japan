@@ -1,0 +1,347 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Apache Iceberg™ (Unofficial) 日本語情報まとめ</title>
+<style>
+  :root {
+    --bg:#ffffff; --fg:#131517; --muted:#737577; --line:#e8e9ea; --hover:#f5f6f7;
+    --accent:#4ce1d7; --accent-ink:#0b6b66; --chip:#f0f1f2; --thumb:#eef9f8;
+    --glow1:rgba(76,225,215,.38); --glow2:rgba(80,150,245,.24); --glow3:rgba(190,150,255,.14);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg:#131517; --fg:#f2f3f4; --muted:#9a9ca0; --line:#2a2d31; --hover:#1c1f22;
+      --accent:#4ce1d7; --accent-ink:#4ce1d7; --chip:#23262a; --thumb:#1b2928;
+      --glow1:rgba(76,225,215,.22); --glow2:rgba(60,120,230,.20); --glow3:rgba(150,110,240,.12);
+    }
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--fg); position:relative; isolation:isolate;
+    font:15px/1.55 -apple-system,BlinkMacSystemFont,"Inter","Hiragino Sans","Noto Sans JP",system-ui,sans-serif; }
+  body::before { content:""; position:fixed; inset:0; z-index:-1; pointer-events:none;
+    background:
+      radial-gradient(60% 42% at 15% -4%, var(--glow1), transparent 72%),
+      radial-gradient(52% 40% at 88% 2%, var(--glow2), transparent 72%),
+      radial-gradient(45% 35% at 55% 0%, var(--glow3), transparent 75%); }
+  a { color:inherit; text-decoration:none; }
+  main { max-width:720px; margin:0 auto; padding:28px 20px 80px; }
+
+  /* calendar header */
+  .top { display:flex; justify-content:flex-end; margin-bottom:20px; }
+  .lang { display:flex; background:var(--chip); border-radius:999px; padding:3px; }
+  .lang button { background:transparent; color:var(--muted); border:0; padding:3px 12px; border-radius:999px; font:inherit; font-size:.8rem; cursor:pointer; }
+  .lang button[aria-pressed="true"] { background:var(--bg); color:var(--fg); font-weight:600; box-shadow:0 1px 2px rgba(0,0,0,.12); }
+  .head { display:flex; gap:16px; align-items:center; }
+  h1 { font-size:1.55rem; line-height:1.25; margin:0; letter-spacing:-.01em; }
+  .desc { margin:14px 0 0; color:var(--muted); }
+  .notice { margin:10px 0 0; font-size:.84rem; color:var(--muted); }
+
+  html { scroll-behavior:smooth; }
+  @media (prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } }
+  .sec-head { scroll-margin-top:16px; }
+  .toc { display:flex; flex-wrap:wrap; gap:8px; margin:18px 0 0; }
+  .toc a { background:var(--chip); color:var(--fg); font-size:.85rem; padding:4px 12px; border-radius:999px; }
+  .toc a:hover { background:var(--hover); }
+  .toc a:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
+
+  /* section header */
+  .sec-head { display:flex; justify-content:space-between; align-items:center; margin:36px 0 8px; padding-bottom:10px; border-bottom:1px solid var(--line); }
+  h2 { font-size:1.15rem; margin:0; }
+
+  /* timeline */
+  .year { margin:22px 0 4px 28px; font-weight:600; font-size:.95rem; }
+  .group { position:relative; display:flex; gap:16px; padding:10px 0 6px 28px; }
+  .group::before { content:""; position:absolute; left:4px; top:0; bottom:0; border-left:2px dotted var(--line); }
+  .group::after { content:""; position:absolute; left:0; top:20px; width:10px; height:10px; border-radius:50%; background:var(--bg); border:2px solid var(--accent); }
+  .day { flex:0 0 88px; padding-top:4px; }
+  .day b { display:block; font-size:.95rem; }
+  .day span { color:var(--muted); font-size:.85rem; }
+  .items { flex:1; min-width:0; display:grid; gap:8px; }
+  .row { display:flex; gap:14px; align-items:center; padding:12px 14px; border-radius:12px; transition:background .12s; }
+  .row:hover { background:var(--hover); }
+  .ev { border-radius:12px; transition:background .12s; }
+  .ev:hover { background:var(--hover); }
+  .ev .row:hover { background:transparent; }
+  .sessions { list-style:none; margin:0; padding:0 14px 12px 28px; display:grid; gap:8px; }
+  .sess { display:flex; flex-wrap:wrap; align-items:baseline; gap:2px 12px; padding-left:12px; border-left:2px solid var(--line); font-size:.9rem; line-height:1.45; }
+  .slink { display:inline-flex; align-items:center; gap:4px; color:var(--accent-ink); font-size:.82rem; font-weight:600; white-space:nowrap; }
+  .slink:hover { text-decoration:underline; }
+  .slink svg { width:14px; height:14px; flex:none; }
+  .row:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
+  .row .body { flex:1; min-width:0; }
+  .row .cover { flex:none; width:48px; height:auto; border-radius:4px; border:1px solid var(--line); background:var(--hover); }
+  .row .fav { flex:none; width:16px; height:16px; border-radius:3px; margin-left:auto; align-self:center; }
+  .row .ico { flex:none; display:inline-flex; color:var(--accent); }
+  .row .ico svg { width:20px; height:20px; }
+  .t { display:block; font-weight:600; line-height:1.4; }
+  .meta { display:block; margin-top:2px; font-size:.85rem; color:var(--muted); }
+  .empty { color:var(--muted); padding:24px 0 8px 28px; }
+
+  /* compact lists */
+  .list { list-style:none; margin:0; padding:0; }
+  .list .row { padding:10px 8px; border-radius:10px; }
+
+  footer { margin-top:56px; padding-top:18px; border-top:1px solid var(--line); font-size:.82rem; color:var(--muted); }
+  footer p { margin:0 0 8px; }
+  footer a { text-decoration:underline; }
+  @media (max-width:520px) {
+    .day { flex-basis:64px; }
+      }
+</style>
+</head>
+<body>
+<main>
+  <div class="top">
+    <div class="lang" role="group" aria-label="Language">
+      <button type="button" data-lang="ja">日本語</button>
+      <button type="button" data-lang="en">English</button>
+    </div>
+  </div>
+
+  <div class="head">
+    <h1 data-i18n="title"></h1>
+  </div>
+  <p class="desc" data-i18n="lead"></p>
+  <p class="notice" data-i18n="notice"></p>
+
+  <nav class="toc" id="toc" aria-label="Sections"></nav>
+
+  <div class="sec-head" id="events">
+    <h2 data-i18n="h_events"></h2>
+  </div>
+  <div id="timeline"></div>
+
+  <div class="sec-head" id="blogs"><h2 data-i18n="h_blogs"></h2></div>
+  <ul class="list" id="ul-blogs"></ul>
+  <div class="sec-head" id="podcasts"><h2 data-i18n="h_podcasts"></h2></div>
+  <ul class="list" id="ul-podcasts"></ul>
+  <div class="sec-head" id="books"><h2 data-i18n="h_books"></h2></div>
+  <ul class="list" id="ul-books"></ul>
+  <div class="sec-head" id="slides"><h2 data-i18n="h_slides"></h2></div>
+  <ul class="list" id="ul-slides"></ul>
+  <div class="sec-head" id="community"><h2 data-i18n="h_community"></h2></div>
+  <ul class="list" id="ul-community"></ul>
+
+  <footer>
+    <p data-i18n-html="footer"></p>
+    <p data-i18n-html="attr"></p>
+  </footer>
+</main>
+<script src="data.js"></script>
+<script>
+(function () {
+  var UI = {
+    ja: {
+      doc: "Apache Iceberg™ (Unofficial) 日本語情報まとめ",
+      title: "Apache Iceberg™ (Unofficial) 日本語情報まとめ",
+      lead: "日本での Apache Iceberg に関するイベント、ブログ、ポッドキャスト、書籍、スライドをまとめた、コミュニティによる一覧です。",
+      notice: "このページは Apache Software Foundation および Apache Iceberg プロジェクトとは関係のない、非公式のコミュニティページです。",
+      none: "イベントはありません。",
+      h_events: "イベント", h_blogs: "ブログ・記事", h_podcasts: "ポッドキャスト", h_books: "書籍", h_slides: "スライド・資料", h_community: "コミュニティ",
+      footer: '掲載の追加・修正は <a href="https://github.com/ebyhr/iceberg-japan" rel="noopener">GitHub リポジトリ</a>への Pull Request でお願いします。Iceberg に関する内容であれば歓迎します。',
+      attr: 'Apache®、Apache Iceberg™ は、米国およびその他の国における <a href="https://www.apache.org/" rel="noopener">Apache Software Foundation</a> の登録商標または商標です。本ページの内容について ASF による承認・推奨を示すものではありません。公式情報は <a href="https://iceberg.apache.org/" rel="noopener">Apache Iceberg</a> をご覧ください。',
+      error: "データを読み込めませんでした。", tbd: "日付未定", slides: "スライド", locale: "ja-JP"
+    },
+    en: {
+      doc: "Apache Iceberg™ (Unofficial) in Japan: Resources",
+      title: "Apache Iceberg™ (Unofficial) in Japan: Resources",
+      lead: "A community-run collection of Apache Iceberg events, blog posts, podcasts, books, and slides from Japan.",
+      notice: "This is an unofficial community page, not affiliated with the Apache Software Foundation or the Apache Iceberg project.",
+      none: "No events.",
+      h_events: "Events", h_blogs: "Blogs & articles", h_podcasts: "Podcasts", h_books: "Books", h_slides: "Slides & materials", h_community: "Community",
+      footer: 'To add or fix an entry, please send a pull request to the <a href="https://github.com/ebyhr/iceberg-japan" rel="noopener">GitHub repository</a>. Anything about Iceberg is welcome.',
+      attr: 'Apache®, Apache Iceberg™ are either registered trademarks or trademarks of the <a href="https://www.apache.org/" rel="noopener">Apache Software Foundation</a> in the United States and/or other countries. No endorsement by the ASF is implied by this page. For official information, see <a href="https://iceberg.apache.org/" rel="noopener">Apache Iceberg</a>.',
+      error: "Failed to load data.", tbd: "TBD", slides: "Slides", locale: "en-US"
+    }
+  };
+
+  var lang = "ja";
+  var isJa = /^ja/i.test(navigator.language || "");
+  try {
+    var saved = localStorage.getItem("lang");
+    lang = (saved === "ja" || saved === "en") ? saved : (isJa ? "ja" : "en");
+  } catch (e) { lang = isJa ? "ja" : "en"; }
+
+  function pick(it, key) { return (lang === "en" && it[key + "_en"]) || it[key]; }
+  function metaText(parts) { return parts.filter(Boolean).join(" · "); }
+  function el(tag, cls, text) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text != null) e.textContent = text;
+    return e;
+  }
+  function isFull(d) { return /^\d{4}-\d{2}-\d{2}$/.test(d || ""); }
+  function utc(d) { var m = d.split("-"); return new Date(Date.UTC(+m[0], +m[1] - 1, +m[2])); }
+  function fmt(d, opts) { return new Intl.DateTimeFormat(UI[lang].locale, Object.assign({ timeZone: "UTC" }, opts)).format(utc(d)); }
+
+  function row(it, metaFn) {
+    var a = el("a", "row");
+    a.href = it.url; a.target = "_blank"; a.rel = "noopener noreferrer";
+    var body = el("span", "body");
+    body.appendChild(el("span", "t", pick(it, "title")));
+    var m = metaFn ? metaFn(it) : "";
+    if (m) body.appendChild(el("span", "meta", m));
+    a.appendChild(body);
+    return a;
+  }
+
+  var SLIDE_ICON = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="1.5" y="2.5" width="13" height="8.5" rx="1.5"/><path d="M8 11v2.5M5.5 14h5"/></svg>';
+
+  function eventCard(e) {
+    var card = el("div", "ev");
+    card.appendChild(row(e, function (x) { return pick(x, "note"); }));
+    if (e.sessions && e.sessions.length) {
+      var ul = el("ul", "sessions");
+      e.sessions.forEach(function (s) {
+        var li = el("li", "sess");
+        li.appendChild(el("span", "sname", pick(s, "title")));
+        if (s.slides) {
+          var a = el("a", "slink");
+          a.href = s.slides; a.target = "_blank"; a.rel = "noopener noreferrer";
+          a.innerHTML = SLIDE_ICON;
+          a.appendChild(document.createTextNode(UI[lang].slides));
+          li.appendChild(a);
+        }
+        ul.appendChild(li);
+      });
+      card.appendChild(ul);
+    }
+    return card;
+  }
+
+  // Generic podcast glyph (original drawing, not the Apple Podcasts logo)
+  var PODCAST_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="10" r="2"/><path d="M8.5 6.5a5 5 0 0 0 0 7M15.5 6.5a5 5 0 0 1 0 7M5.7 4a8.8 8.8 0 0 0 0 12M18.3 4a8.8 8.8 0 0 1 0 12M12 12.5V20M9.5 20h5"/></svg>';
+
+  // Blog / article glyph: page with text lines and a pen
+  var BLOG_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V9z"/><path d="M13 3v6h6M8.5 13h7M8.5 17h5"/></svg>';
+
+  function renderList(id, items, metaFn, iconFn, favicon) {
+    var ul = document.getElementById("ul-" + id);
+    ul.textContent = "";
+    var hd = ul.previousElementSibling, show = (items && items.length) ? "" : "none";
+    ul.style.display = show;
+    if (hd && hd.classList.contains("sec-head")) hd.style.display = show;
+    (items || []).forEach(function (it) {
+      var li = el("li");
+      var a = el("a", "row");
+      a.href = it.url; a.target = "_blank"; a.rel = "noopener noreferrer";
+      if (/^https:\/\//.test(it.image || "")) {
+        var img = el("img", "cover");
+        img.src = it.image; img.alt = ""; img.loading = "lazy";
+        img.referrerPolicy = "no-referrer";
+        img.onerror = function () { img.remove(); };
+        a.appendChild(img);
+      }
+      var body = el("span", "body");
+      body.appendChild(el("span", "t", pick(it, "title")));
+      var m = metaFn ? metaFn(it) : "";
+      if (m) body.appendChild(el("span", "meta", m));
+      a.appendChild(body);
+      if (favicon) {
+        var host = "";
+        try { host = new URL(it.url).hostname; } catch (e) {}
+        if (host) {
+          var fav = el("img", "fav");
+          fav.src = "https://www.google.com/s2/favicons?sz=32&domain=" + encodeURIComponent(host);
+          fav.alt = ""; fav.width = 16; fav.height = 16; fav.loading = "lazy";
+          fav.referrerPolicy = "no-referrer";
+          fav.onerror = function () { fav.remove(); };
+          a.appendChild(fav);
+        }
+      }
+      var ic = iconFn ? iconFn(it) : null;
+      if (ic) {
+        var s = el("span", "ico");
+        s.title = ic[0];
+        s.setAttribute("role", "img");
+        s.setAttribute("aria-label", ic[0]);
+        s.innerHTML = ic[1];
+        a.insertBefore(s, body);
+      }
+      li.appendChild(a);
+      ul.appendChild(li);
+    });
+  }
+
+  function renderTimeline(events) {
+    var t = UI[lang], box = document.getElementById("timeline");
+    box.textContent = "";
+    var dated = events.filter(function (e) { return isFull(e.date); }).sort(function (a, b) { return b.date.localeCompare(a.date); });
+    var undated = events.filter(function (e) { return !isFull(e.date); });
+    var list = dated.concat(undated);
+    if (!list.length) { box.appendChild(el("p", "empty", t.none)); return; }
+
+    var lastYear = "", i = 0;
+    while (i < list.length) {
+      var d = list[i].date, grp = [];
+      while (i < list.length && list[i].date === d) { grp.push(list[i]); i++; }
+      if (isFull(d)) {
+        var yr = d.slice(0, 4);
+        if (yr !== lastYear) {
+          box.appendChild(el("div", "year", fmt(d, { year: "numeric" })));
+          lastYear = yr;
+        }
+      }
+      var g = el("div", "group");
+      var day = el("div", "day");
+      if (isFull(d)) {
+        day.appendChild(el("b", null, fmt(d, { month: "short", day: "numeric" })));
+        day.appendChild(el("span", null, fmt(d, { weekday: "long" })));
+      } else {
+        day.appendChild(el("b", null, t.tbd));
+      }
+      g.appendChild(day);
+      var items = el("div", "items");
+      grp.forEach(function (e) { items.appendChild(eventCard(e)); });
+      g.appendChild(items);
+      box.appendChild(g);
+    }
+  }
+
+  function apply() {
+    var t = UI[lang], d = window.ICEBERG_DATA;
+    document.documentElement.lang = lang;
+    document.title = t.doc;
+    Array.prototype.forEach.call(document.querySelectorAll("[data-i18n]"), function (e) { e.textContent = t[e.getAttribute("data-i18n")]; });
+    Array.prototype.forEach.call(document.querySelectorAll("[data-i18n-html]"), function (e) { e.innerHTML = t[e.getAttribute("data-i18n-html")]; });
+    Array.prototype.forEach.call(document.querySelectorAll(".lang button"), function (b) {
+      b.setAttribute("aria-pressed", b.getAttribute("data-lang") === lang ? "true" : "false");
+    });
+    if (!d) { document.getElementById("timeline").textContent = t.error; return; }
+    renderTimeline(d.events || []);
+    renderList("blogs", d.blogs, function (b) { return metaText([b.author, b.date]); },
+      function () { return [lang === "ja" ? "ブログ" : "Blog", BLOG_ICON]; }, true);
+    renderList("podcasts", d.podcasts, function (p) { return metaText([p.show, p.guest, p.date]); },
+      function (p) { return /^https:\/\/podcasts\.apple\.com\//.test(p.url) ? ["Apple Podcasts", PODCAST_ICON] : null; });
+    renderList("books", d.books, function (b) { return metaText([b.publisher, pick(b, "note")]); });
+    renderList("slides", d.slides, function (s) { return metaText([s.author, s.date]); });
+    renderList("community", d.community);
+    renderToc();
+  }
+
+  function renderToc() {
+    var nav = document.getElementById("toc");
+    nav.textContent = "";
+    ["events", "blogs", "podcasts", "books", "slides", "community"].forEach(function (k) {
+      var h = document.getElementById(k);
+      if (!h || h.style.display === "none") return;
+      var a = el("a", null, h.textContent.trim());
+      a.href = "#" + k;
+      nav.appendChild(a);
+    });
+  }
+
+  Array.prototype.forEach.call(document.querySelectorAll(".lang button"), function (b) {
+    b.addEventListener("click", function () {
+      lang = b.getAttribute("data-lang");
+      try { localStorage.setItem("lang", lang); } catch (e) {}
+      apply();
+    });
+  });
+  apply();
+})();
+</script>
+</body>
+</html>
